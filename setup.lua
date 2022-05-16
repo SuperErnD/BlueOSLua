@@ -20,7 +20,7 @@ print("Downloading archive")
 downloadFile("https://raw.githubusercontent.com/SuperErnD/BlueOS/main/archive.lua",'archive.lua')
 print("Downloaded!")
 print("Unpacking OS")
-shell.execute("archive","rom.arch")
+shell.execute("archive","unzip","rom.arch","/")
 print("Unpacked!")
 
 print("Readed!")
