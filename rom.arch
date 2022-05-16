@@ -102,8 +102,12 @@ end\\\
 if tArgs[1] == \\\"zip\\\" then\\\
 if fs.exists(tArgs[2]) and fs.isDir(tArgs[2]) then\\\
 local zipped = ZIP(shell.resolve(tArgs[2]))\\\
+print(tArgs)\\\
 local f = fs.open(tArgs[3]..FFormat, \\\"w\\\")\\\
+print(file)\\\
+\\\
 f.write(zipped)\\\
+\\\
 f.close()\\\
 zipped = nil\\\
 size = fs.getSize(tArgs[3]..FFormat)\\\
@@ -145,8 +149,6 @@ StartInitSystem()\\\\\\\"\\\",\\\
   \"F:motd\",\
   \"\\\"Hi, welcome to BlueOS v0.0.1 \\\\\\\
 This is beta!\\\"\",\
-  \"F:users.json\",\
-  \"\\\"\\\"\",\
 }",
   "F:install.lua",
   "\"if not http then \\\
@@ -154,13 +156,14 @@ This is beta!\\\"\",\
 	print(\\\"Installation cannot continue\\\")\\\
 	return\\\
 end\\\
-setup = http.get('https://raw.githubusercontent.com/SuperErnD/BlueOS/main/README.md')\\\
+setup = http.get('https://raw.githubusercontent.com/SuperErnD/BlueOS/main/setup.lua')\\\
 print(setup)\\\
 code = setup.readAll()\\\
 setup.close()\\\
-file=fs.open(\\\"setupp.lua\\\",'w')\\\
+file=fs.open(\\\"setup.lua\\\",'w')\\\
 file.write(code)\\\
-file.close()\"",
+file.close()\\\
+shell.execute('setup.lua')\"",
   "D:lib",
   "{\
   \"F:json.lua\",\
@@ -383,34 +386,45 @@ end\\\"\",\
 }",
   "D:lib",
   [ 13 ] = "F:setup.lua",
-  [ 14 ] = "\"if not http do \\\
+  [ 14 ] = "\"if not http then \\\
 	print(\\\"Enable HTTP-API to continue\\\")\\\
 	print(\\\"Installation cannot continue\\\")\\\
 	return\\\
 end\\\
 function downloadFile (url,file) \\\
+	setup = http.get(url)\\\
 	\\\
-end\"",
-  [ 15 ] = "F:setupp.lua",
-  [ 16 ] = "\"# BlueOS\\\
-A OS for CC: Tweaked\\\
+	code = setup.readAll()\\\
+	setup.close()\\\
+	file=fs.open(file,'w')\\\
+	file.write(code)\\\
+	file.close()\\\
+end\\\
+io.write(\\\"Starting installation...\\\")\\\
+print(\\\"Downloading OS \\\")\\\
+downloadFile('https://raw.githubusercontent.com/SuperErnD/BlueOS/main/rom.arch','rom.arch')\\\
+print(\\\"Downloaded!\\\")\\\
+print(\\\"Downloading archive\\\")\\\
+downloadFile(\\\"https://raw.githubusercontent.com/SuperErnD/BlueOS/main/archive.lua\\\",'archive.lua')\\\
+print(\\\"Downloaded!\\\")\\\
+print(\\\"Unpacking OS\\\")\\\
+shell.execute(\\\"archive\\\",\\\"unzip\\\",\\\"rom.arch\\\",\\\"/\\\")\\\
+print(\\\"Unpacked!\\\")\\\
 \\\
-This OS is trying to be like Linux\\\
+print(\\\"Readed!\\\")\\\
+print('Installing BootS')\\\
+print(\\\"Downloading...\\\")\\\
+downloadFile('https://raw.githubusercontent.com/SuperErnD/BlueOS/main/startup.lua','startup.lua')\\\
+print('Installed!')\\\
+print('waiting for request')\\\
+read()\\\
+print('Rebooting..')\\\
+os.sleep(1)\\\
+os.reboot()\\\
 \\\
-She's not perfect, but she's trying, development has started recently\\\
-\\\
-(15.05.2022)\\\
-\\\
-And she is still very raw\\\
-\\\
-**Good luck**\\\
-\\\
-to install use\\\
-`pastebin get code install`\\\
-\\\
-and run `install`\"",
-  [ 17 ] = "F:startup.lua",
-  [ 18 ] = "\"term.clear()\\\
+\"",
+  [ 15 ] = "F:startup.lua",
+  [ 16 ] = "\"term.clear()\\\
 term.setCursorPos(1,1)\\\
 print(\\\"Welcome to BootS\\\")\\\
 \\\
@@ -434,8 +448,8 @@ while true do \\\
 		print('Unkown choice')\\\
 	end\\\
 end\"",
-  [ 19 ] = "D:usr",
-  [ 20 ] = "{\
+  [ 17 ] = "D:usr",
+  [ 18 ] = "{\
   \"D:bin\",\
   \"{\\\
   \\\"F:ccsh.lua\\\",\\\
@@ -462,7 +476,11 @@ function StartInitSystem()\\\\\\\\\\\\\\\
 	log('Daemon has starting...')\\\\\\\\\\\\\\\
 end\\\\\\\"\\\",\\\
   \\\"F:startup.lua\\\",\\\
-  \\\"\\\\\\\"\\\\\\\"\\\",\\\
+  \\\"\\\\\\\"term.setBackgroundColour(colors.blue)\\\\\\\\\\\\\\\
+os.sleep(1)\\\\\\\\\\\\\\\
+term.setBackgroundColour(colors.lime)\\\\\\\\\\\\\\\
+os.sleep(1)\\\\\\\\\\\\\\\
+term.setBackgroundColour(colors.black)\\\\\\\"\\\",\\\
 }\",\
 }",
 }
